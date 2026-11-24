@@ -49,6 +49,7 @@ class CardinalHUDClient : ClientModInitializer {
 
     override fun onInitializeClient() {
         config.load()
+        config.save()
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.BOSS_BAR, CardinalHUD.id("cardinal_hud")) { graphics, deltaTracker ->
             val client = Minecraft.getInstance()
