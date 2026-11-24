@@ -197,7 +197,10 @@ class CardinalHUDClient : ClientModInitializer {
     private fun displayIconToHud(graphics: GuiGraphicsExtractor, color: Int, sprite: Identifier, yaw: Double, pitchDirection: TrackedWaypoint.PitchDirection, centerX: Int, text: Component = Component.empty()) {
         val x = centerX + round(yaw * 3f)
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x.toInt(), 5, 9, 9, color)
-        graphics.centeredText(Minecraft.getInstance().font, text, x.toInt() + 4, 15, -1)
+        graphics.pose().pushMatrix()
+        graphics.pose().scale(0.5f, 0.5f)
+        graphics.centeredText(Minecraft.getInstance().font, text, (x.toInt() + 4) * 2, 15 * 2, -1)
+        graphics.pose().popMatrix()
 
         if (pitchDirection != TrackedWaypoint.PitchDirection.NONE) {
             val arrowTop = if (pitchDirection == TrackedWaypoint.PitchDirection.DOWN) 6 else -6
