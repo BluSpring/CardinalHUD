@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "cardinalhud",
+  "version": "${version}",
+  "name": "CardinalHUD",
+  "description": "A custom cardinal/compass HUD with waypoint support that also replaces the locator bar, because I needed a waypoint system.",
+  "authors": [
+    "BluSpring"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/cardinalhud/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "xyz.bluspring.cardinalhud.client.CardinalHUDClient"
+    ],
+    "main": [
+      "xyz.bluspring.cardinalhud.CardinalHUD"
+    ]
+  },
+  "mixins": [
+    "cardinalhud.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-language-kotlin": ">=${kotlin_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "~${minecraft_version}"
+  }
+}
