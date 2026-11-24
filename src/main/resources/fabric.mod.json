@@ -7,7 +7,9 @@
   "authors": [
     "BluSpring"
   ],
-  "contact": {},
+  "contact": {
+    "sources": "https://github.com/BluSpring/CardinalHUD"
+  },
   "license": "MIT",
   "icon": "assets/cardinalhud/icon.png",
   "environment": "client",
