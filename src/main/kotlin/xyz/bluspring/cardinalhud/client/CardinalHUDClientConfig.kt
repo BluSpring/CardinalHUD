@@ -4,7 +4,7 @@ object CardinalHUDClientConfig {
     var replaceLocatorBar = true
 
     var spawnCompassBehavior = CompassBehavior.HOTBAR
-    var respawnCompassBehavior = CompassBehavior.HOTBAR
+    var recoveryCompassBehavior = CompassBehavior.HOTBAR
     var lodestoneCompassBehavior = CompassBehavior.INVENTORY
 
     var isHidden = false

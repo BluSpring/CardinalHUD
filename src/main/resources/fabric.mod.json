@@ -19,6 +19,9 @@
     ],
     "main": [
       "xyz.bluspring.cardinalhud.CardinalHUD"
+    ],
+    "modmenu": [
+      "xyz.bluspring.cardinalhud.client.config.CardinalModMenu"
     ]
   },
   "mixins": [

@@ -35,7 +35,7 @@ class CardinalHUDClient : ClientModInitializer {
             boolean("hidden", CardinalHUDClientConfig::isHidden)
 
             value("spawnCompassBehavior", CompassBehavior.CODEC, CardinalHUDClientConfig::spawnCompassBehavior)
-            value("respawnCompassBehavior", CompassBehavior.CODEC, CardinalHUDClientConfig::respawnCompassBehavior)
+            value("respawnCompassBehavior", CompassBehavior.CODEC, CardinalHUDClientConfig::recoveryCompassBehavior)
             value("lodestoneCompassBehavior", CompassBehavior.CODEC, CardinalHUDClientConfig::lodestoneCompassBehavior)
         }
 
@@ -118,8 +118,8 @@ class CardinalHUDClient : ClientModInitializer {
                     }
                 }
 
-                if (CardinalHUDClientConfig.respawnCompassBehavior != CompassBehavior.DISABLED) {
-                    val stacks = CardinalHUDClientConfig.respawnCompassBehavior.findStacksForPlayer(player) { instance -> instance.`is`(Items.RECOVERY_COMPASS) }
+                if (CardinalHUDClientConfig.recoveryCompassBehavior != CompassBehavior.DISABLED) {
+                    val stacks = CardinalHUDClientConfig.recoveryCompassBehavior.findStacksForPlayer(player) { instance -> instance.`is`(Items.RECOVERY_COMPASS) }
 
                     if (stacks.isNotEmpty()) {
                         val pos = CompassAngleState.CompassTarget.RECOVERY.get(level, stacks.first(), player)
