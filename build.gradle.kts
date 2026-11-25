@@ -57,8 +57,8 @@ dependencies {
     include(api("xyz.bluspring.sunset:sunset-config:$sunsetVersion")!!)
     include(api("xyz.bluspring.sunset:sunset-config:$sunsetVersion:dfu8")!!)
 
-    include(api("dev.isxander:yet-another-config-lib:3.9.7+26.2-fabric")!!)
-    implementation("com.terraformersmc:modmenu:20.0.3")
+    include(api("dev.isxander:yet-another-config-lib:${property("yacl_version")}")!!)
+    implementation("com.terraformersmc:modmenu:${property("modmenu_version")}")
 }
 
 tasks.processResources {
