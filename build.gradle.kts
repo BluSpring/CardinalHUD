@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
 }
 
-version = project.property("mod_version") as String
+version = "${property("mod_version")}+${property("minecraft_version")}"
 group = project.property("maven_group") as String
 
 base {
