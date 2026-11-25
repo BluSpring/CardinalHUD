@@ -54,8 +54,8 @@ dependencies {
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
 
     val sunsetVersion = "1.3.3"
-    api("xyz.bluspring.sunset:sunset-config:$sunsetVersion")
-    api("xyz.bluspring.sunset:sunset-config:$sunsetVersion:dfu8")
+    include(api("xyz.bluspring.sunset:sunset-config:$sunsetVersion")!!)
+    include(api("xyz.bluspring.sunset:sunset-config:$sunsetVersion:dfu8")!!)
 
     include(api("dev.isxander:yet-another-config-lib:3.9.7+26.2-fabric")!!)
     implementation("com.terraformersmc:modmenu:20.0.3")
