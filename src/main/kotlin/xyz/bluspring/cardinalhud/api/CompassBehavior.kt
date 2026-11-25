@@ -1,11 +1,10 @@
-package xyz.bluspring.cardinalhud.client
+package xyz.bluspring.cardinalhud.api
 
 import com.mojang.serialization.Codec
 import net.minecraft.util.StringRepresentable
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.ItemInstance
 import net.minecraft.world.item.ItemStack
 
 enum class CompassBehavior(private val serialized: String) : StringRepresentable {

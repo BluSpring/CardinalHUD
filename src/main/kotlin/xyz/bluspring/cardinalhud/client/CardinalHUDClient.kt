@@ -1,5 +1,6 @@
 package xyz.bluspring.cardinalhud.client
 
+import com.mojang.serialization.Codec
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
@@ -22,11 +23,15 @@ import net.minecraft.world.phys.Vec3
 import net.minecraft.world.waypoints.PartialTickSupplier
 import net.minecraft.world.waypoints.TrackedWaypoint
 import xyz.bluspring.cardinalhud.CardinalHUD
+import xyz.bluspring.cardinalhud.api.CardinalHudApi
+import xyz.bluspring.cardinalhud.api.CompassBehavior
 import xyz.bluspring.sunset.SunsetConfig
 import kotlin.math.round
 
 class CardinalHUDClient : ClientModInitializer {
     companion object {
+        internal val waypointTypes = mutableMapOf<Identifier, CardinalWaypointType>()
+
         const val WIDTH = 400
         const val HEIGHT = 100
 
@@ -34,9 +39,7 @@ class CardinalHUDClient : ClientModInitializer {
             boolean("replaceLocatorBar", CardinalHUDClientConfig::replaceLocatorBar)
             boolean("hidden", CardinalHUDClientConfig::isHidden)
 
-            value("spawnCompassBehavior", CompassBehavior.CODEC, CardinalHUDClientConfig::spawnCompassBehavior)
-            value("respawnCompassBehavior", CompassBehavior.CODEC, CardinalHUDClientConfig::recoveryCompassBehavior)
-            value("lodestoneCompassBehavior", CompassBehavior.CODEC, CardinalHUDClientConfig::lodestoneCompassBehavior)
+            value("behaviors", Codec.unboundedMap(Identifier.CODEC, CompassBehavior.CODEC), CardinalHUDClientConfig::behaviors)
         }
 
         private val LOCATOR_BAR_ARROW_UP = Identifier.withDefaultNamespace("hud/locator_bar_arrow_up")
@@ -50,6 +53,15 @@ class CardinalHUDClient : ClientModInitializer {
     override fun onInitializeClient() {
         config.load()
         config.save()
+
+        CardinalHudApi.registerWaypointType(CardinalHUD.id("compass/spawn"), SPAWN_ICON, CompassBehavior.HELD, 1, { instance -> instance.`is`(Items.COMPASS) && !instance.has(DataComponents.LODESTONE_TRACKER) },
+            CompassAngleState.CompassTarget.SPAWN::get)
+
+        CardinalHudApi.registerWaypointType(CardinalHUD.id("compass/recovery"), RESPAWN_ICON, CompassBehavior.HOTBAR, 1, { instance -> instance.`is`(Items.RECOVERY_COMPASS) },
+            CompassAngleState.CompassTarget.RECOVERY::get)
+
+        CardinalHudApi.registerWaypointType(CardinalHUD.id("compass/lodestone"), LODESTONE_ICON, CompassBehavior.INVENTORY, 50, { instance -> instance.`is`(Items.COMPASS) && instance.has(DataComponents.LODESTONE_TRACKER) },
+            CompassAngleState.CompassTarget.LODESTONE::get)
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.BOSS_BAR, CardinalHUD.id("cardinal_hud")) { graphics, deltaTracker ->
             val client = Minecraft.getInstance()
@@ -107,38 +119,17 @@ class CardinalHUDClient : ClientModInitializer {
             }
 
             if (player != null && level != null) {
-                if (CardinalHUDClientConfig.spawnCompassBehavior != CompassBehavior.DISABLED) {
-                    val stacks = CardinalHUDClientConfig.spawnCompassBehavior.findStacksForPlayer(player) { instance -> instance.`is`(Items.COMPASS) && !instance.has(DataComponents.LODESTONE_TRACKER) }
+                for ((typeId, type) in waypointTypes) {
+                    val behavior = CardinalHUDClientConfig.behaviors.computeIfAbsent(typeId) { type.defaultBehavior }
+                    val stacks = behavior.findStacksForPlayer(player, type.stackFilter::test)
 
-                    if (stacks.isNotEmpty()) {
-                        val pos = CompassAngleState.CompassTarget.SPAWN.get(level, stacks.first(), player)
+                    for ((index, stack) in stacks.withIndex()) {
+                        if (index >= type.maxWaypoints)
+                            break
 
-                        if (pos != null && pos.dimension == level.dimension())
-                            displayIconToHud(graphics, -1, SPAWN_ICON, centerX, Vec3.atCenterOf(pos.pos), client.gameRenderer.mainCamera(), client)
-                    }
-                }
-
-                if (CardinalHUDClientConfig.recoveryCompassBehavior != CompassBehavior.DISABLED) {
-                    val stacks = CardinalHUDClientConfig.recoveryCompassBehavior.findStacksForPlayer(player) { instance -> instance.`is`(Items.RECOVERY_COMPASS) }
-
-                    if (stacks.isNotEmpty()) {
-                        val pos = CompassAngleState.CompassTarget.RECOVERY.get(level, stacks.first(), player)
-
-                        if (pos != null && pos.dimension == level.dimension())
-                            displayIconToHud(graphics, -1, RESPAWN_ICON, centerX, Vec3.atCenterOf(pos.pos), client.gameRenderer.mainCamera(), client)
-                    }
-                }
-
-                if (CardinalHUDClientConfig.lodestoneCompassBehavior != CompassBehavior.DISABLED) {
-                    val stacks = CardinalHUDClientConfig.lodestoneCompassBehavior.findStacksForPlayer(player) { instance -> instance.`is`(Items.COMPASS) && instance.has(DataComponents.LODESTONE_TRACKER) }
-
-                    if (stacks.isNotEmpty()) {
-                        for (stack in stacks) {
-                            val pos = CompassAngleState.CompassTarget.LODESTONE.get(level, stack, player)
-
-                            if (pos != null && pos.dimension == level.dimension()) {
-                                displayIconToHud(graphics, -1, LODESTONE_ICON, centerX, Vec3.atCenterOf(pos.pos), client.gameRenderer.mainCamera(), client, stack.get(DataComponents.CUSTOM_NAME) ?: Component.empty())
-                            }
+                        val pos = type.positionGetter(level, stack, player)
+                        if (pos != null && pos.dimension == level.dimension()) {
+                            displayIconToHud(graphics, type.colorGetter(stack), type.icon, centerX, Vec3.atCenterOf(pos.pos), client.gameRenderer.mainCamera(), client)
                         }
                     }
                 }

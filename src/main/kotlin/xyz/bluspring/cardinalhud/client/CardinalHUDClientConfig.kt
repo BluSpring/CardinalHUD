@@ -1,11 +1,11 @@
 package xyz.bluspring.cardinalhud.client
 
+import net.minecraft.resources.Identifier
+import xyz.bluspring.cardinalhud.api.CompassBehavior
+import java.util.*
+
 object CardinalHUDClientConfig {
     var replaceLocatorBar = true
-
-    var spawnCompassBehavior = CompassBehavior.HOTBAR
-    var recoveryCompassBehavior = CompassBehavior.HOTBAR
-    var lodestoneCompassBehavior = CompassBehavior.INVENTORY
-
+    var behaviors: MutableMap<Identifier, CompassBehavior> = Collections.synchronizedMap(mutableMapOf())
     var isHidden = false
 }

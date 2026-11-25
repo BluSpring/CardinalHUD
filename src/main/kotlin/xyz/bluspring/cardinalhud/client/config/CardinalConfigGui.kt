@@ -4,8 +4,9 @@ import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.dsl.*
 import net.minecraft.client.gui.screens.Screen
 import xyz.bluspring.cardinalhud.CardinalHUD
+import xyz.bluspring.cardinalhud.api.CompassBehavior
 import xyz.bluspring.cardinalhud.client.CardinalHUDClient
-import xyz.bluspring.cardinalhud.client.CompassBehavior
+import xyz.bluspring.cardinalhud.client.CardinalHUDClientConfig
 
 private fun <T> bindingFromSunset(name: String): Binding<T> {
     val value = CardinalHUDClient.config.rootCategory.getValueById<T>(name)!!
@@ -27,25 +28,20 @@ fun generateConfigGui(lastScreen: Screen?): Screen = YetAnotherConfigLib(Cardina
             }
 
             val isHidden by options.registering {
-                binding = bindingFromSunset("isHidden")
+                binding = bindingFromSunset("hidden")
                 controller = tickBox()
             }
         }
 
         val behaviors by groups.registering {
-            val spawnCompass by options.registering {
-                binding = bindingFromSunset("spawnCompassBehavior")
-                controller = enumSwitch(CompassBehavior::class.java)
-            }
+            for ((typeId, type) in CardinalHUDClient.waypointTypes) {
+                options.register(typeId.toString()) {
+                    binding = Binding.generic(type.defaultBehavior, { CardinalHUDClientConfig.behaviors[typeId] ?: type.defaultBehavior }) {
+                        CardinalHUDClientConfig.behaviors[typeId] = it
+                    }
 
-            val recoveryCompass by options.registering {
-                binding = bindingFromSunset("recoveryCompassBehavior")
-                controller = enumSwitch(CompassBehavior::class.java)
-            }
-
-            val lodestoneCompass by options.registering {
-                binding = bindingFromSunset("lodestoneCompassBehavior")
-                controller = enumSwitch(CompassBehavior::class.java)
+                    controller(enumSwitch(CompassBehavior::class.java))
+                }
             }
         }
     }
