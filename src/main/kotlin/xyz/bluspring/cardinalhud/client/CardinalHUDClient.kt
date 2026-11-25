@@ -75,10 +75,19 @@ class CardinalHUDClient : ClientModInitializer {
         CardinalHudApi.registerWaypointType(CardinalHUD.id("compass/lodestone"), LODESTONE_ICON, CompassBehavior.INVENTORY, 50, { instance -> instance.`is`(Items.COMPASS) && instance.has(DataComponents.LODESTONE_TRACKER) },
             CompassAngleState.CompassTarget.LODESTONE::get, supportsNames = true)
 
+        var isDirty = false
+        var lastWrite = 0L
+
         ClientTickEvents.END_CLIENT_TICK.register { client ->
-            if (TOGGLE_KEY.consumeClick()) {
+            while (TOGGLE_KEY.consumeClick()) {
                 CardinalHUDClientConfig.isHidden = !CardinalHUDClientConfig.isHidden
+                isDirty = true
+            }
+
+            if (isDirty && System.currentTimeMillis() - lastWrite >= 30_000L) {
                 config.save()
+                lastWrite = System.currentTimeMillis()
+                isDirty = false
             }
         }
 
