@@ -91,6 +91,7 @@ class CardinalHUDClient : ClientModInitializer {
 
             val font = client.font
 
+            // N/E/S/W compass
             for (direction in Direction.Plane.HORIZONTAL) {
                 val relativeX = Mth.wrapDegrees(direction.toYRot() - yaw)
                 val x = centerX + round(relativeX * 3f)
@@ -99,6 +100,7 @@ class CardinalHUDClient : ClientModInitializer {
                 graphics.centeredText(font, "${direction.name.first()}", x.toInt(), 20, -1)
             }
 
+            // dotted lines
             for (i in 0 until (360 / 15)) {
                 val degrees = i * 15
 
@@ -109,6 +111,7 @@ class CardinalHUDClient : ClientModInitializer {
                 val x = centerX + round(relativeX * 3f)
 
                 if (degrees % 45 == 0) {
+                    // diagonal cardinals
                     graphics.fill(x.toInt() - 1, 6, x.toInt(), 14, -1)
 
                     val dir1 = Direction.fromYRot(degrees - 45.0)
@@ -126,6 +129,8 @@ class CardinalHUDClient : ClientModInitializer {
 
             val level = client.level
             val player = client.player
+
+            // locator bar
             if (CardinalHUDClientConfig.replaceLocatorBar && level != null && player != null) {
                 val entity = client.cameraEntity ?: player
                 val ptSupplier: PartialTickSupplier = { deltaTracker.getGameTimeDeltaPartialTick(!level.tickRateManager().isEntityFrozen(entity)) }
@@ -135,6 +140,7 @@ class CardinalHUDClient : ClientModInitializer {
             }
 
             if (player != null && level != null) {
+                // custom waypoint types
                 for ((typeId, type) in waypointTypes) {
                     val behavior = CardinalHUDClientConfig.behaviors[typeId] ?: type.defaultBehavior
                     val stacks = behavior.findStacksForPlayer(player, type.stackFilter::test)
