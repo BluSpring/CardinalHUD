@@ -32,6 +32,18 @@ fun generateConfigGui(lastScreen: Screen?): Screen = YetAnotherConfigLib(Cardina
                 binding = bindingFromSunset("hidden")
                 controller = tickBox()
             }
+
+            val showDistance by options.registering {
+                binding = bindingFromSunset("showDistance")
+                controller = tickBox()
+            }
+
+            val maxDisplayDistance by options.registering {
+                binding = bindingFromSunset("maxDisplayDistance")
+                controller = slider(0..1_000_000, step = 1_000) {
+                    Component.translatable("cardinalhud.format.blocks", if (it == 0) "∞" else it)
+                }
+            }
         }
 
         val behaviors by groups.registering {

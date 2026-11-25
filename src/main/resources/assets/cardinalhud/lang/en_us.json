@@ -3,6 +3,9 @@
   "yacl3.config.cardinalhud.category.main.group.preferences": "Preferences",
   "yacl3.config.cardinalhud.category.main.group.preferences.option.replaceLocatorBar": "Replace Locator Bar",
   "yacl3.config.cardinalhud.category.main.group.preferences.option.isHidden": "Is HUD Hidden?",
+  "yacl3.config.cardinalhud.category.main.group.preferences.option.showDistance": "Show Waypoint Distance?",
+  "yacl3.config.cardinalhud.category.main.group.preferences.option.maxDisplayDistance": "Max Waypoint Distance",
+
   "yacl3.config.cardinalhud.category.main.group.behaviors": "Waypoint Icon Display Behaviors",
   "yacl3.config.cardinalhud.category.main.group.behaviors.option.cardinalhud:compass/spawn": "Spawn Compass",
   "yacl3.config.cardinalhud.category.main.group.behaviors.option.cardinalhud:compass/recovery": "Recovery Compass",
@@ -14,5 +17,9 @@
   "cardinalhud.compass_behavior.inventory": "Anywhere in inventory",
 
   "key.category.cardinalhud.main": "CardinalHUD",
-  "key.cardinalhud.toggle": "Toggle HUD"
+  "key.cardinalhud.toggle": "Toggle HUD",
+
+  "cardinalhud.format.blocks": "%s blocks",
+  "cardinalhud.format.meters": "%sm",
+  "cardinalhud.format.kilometers": "%skm"
 }

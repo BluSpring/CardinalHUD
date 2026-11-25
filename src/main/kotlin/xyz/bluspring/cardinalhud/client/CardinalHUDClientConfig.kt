@@ -7,4 +7,6 @@ object CardinalHUDClientConfig {
     var replaceLocatorBar = true
     var behaviors: Map<Identifier, CompassBehavior> = mapOf()
     var isHidden = false
+    var showDistance = true
+    var maxDisplayDistance = 100_000
 }

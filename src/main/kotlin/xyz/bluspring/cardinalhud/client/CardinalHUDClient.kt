@@ -42,6 +42,8 @@ class CardinalHUDClient : ClientModInitializer {
         val config = SunsetConfig.create(FabricLoader.getInstance().configDir.resolve("cardinalhud_client.json")) {
             boolean("replaceLocatorBar", CardinalHUDClientConfig::replaceLocatorBar)
             boolean("hidden", CardinalHUDClientConfig::isHidden)
+            boolean("showDistance", CardinalHUDClientConfig::showDistance)
+            integer("maxDisplayDistance", CardinalHUDClientConfig::maxDisplayDistance)
 
             value("behaviors", Codec.unboundedMap(Identifier.CODEC, CompassBehavior.CODEC), CardinalHUDClientConfig::behaviors)
         }
@@ -175,6 +177,9 @@ class CardinalHUDClient : ClientModInitializer {
     }
 
     private fun displayIconToHud(graphics: GuiGraphicsExtractor, color: Int, sprite: Identifier, centerX: Int, pos: Vec3, camera: Camera, client: Minecraft, text: Component = Component.empty()) {
+        if (CardinalHUDClientConfig.maxDisplayDistance != 0 && camera.position().distanceTo(pos) > CardinalHUDClientConfig.maxDisplayDistance)
+            return
+
         val direction = camera.position().subtract(pos).rotateClockwise90()
         val waypointAngle = Mth.atan2(direction.z(), direction.x()).toFloat() * (180f / Mth.PI)
         val yaw = Mth.degreesDifference(camera.yaw(), waypointAngle).toDouble()
@@ -201,15 +206,29 @@ class CardinalHUDClient : ClientModInitializer {
             }
         }
 
-        displayIconToHud(graphics, color, sprite, yaw, pitchDirection, centerX, text)
+        val distance = if (CardinalHUDClientConfig.showDistance)
+            camera.position().distanceTo(pos).toInt()
+        else
+            -1
+
+        displayIconToHud(graphics, color, sprite, yaw, pitchDirection, centerX, text, distance)
     }
 
-    private fun displayIconToHud(graphics: GuiGraphicsExtractor, color: Int, sprite: Identifier, yaw: Double, pitchDirection: TrackedWaypoint.PitchDirection, centerX: Int, text: Component = Component.empty()) {
+    private fun displayIconToHud(graphics: GuiGraphicsExtractor, color: Int, sprite: Identifier, yaw: Double, pitchDirection: TrackedWaypoint.PitchDirection, centerX: Int, text: Component = Component.empty(), distance: Int = -1) {
         val x = centerX + round(yaw * 3f)
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x.toInt(), 5, 9, 9, color)
         graphics.pose().pushMatrix()
         graphics.pose().scale(0.5f, 0.5f)
         graphics.centeredText(Minecraft.getInstance().font, text, (x.toInt() + 4) * 2, 15 * 2, -1)
+        if (distance > 0) {
+            graphics.centeredText(Minecraft.getInstance().font,
+                if (distance > 100_000)
+                    Component.translatable("cardinalhud.format.kilometers", "%.1f".format(distance / 1_000.0))
+                else
+                    Component.translatable("cardinalhud.format.meters", distance),
+                (x.toInt() + 4) * 2, 21 * 2, -1)
+        }
+
         graphics.pose().popMatrix()
 
         if (pitchDirection != TrackedWaypoint.PitchDirection.NONE) {
