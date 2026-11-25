@@ -134,7 +134,7 @@ class CardinalHUDClient : ClientModInitializer {
 
             if (player != null && level != null) {
                 for ((typeId, type) in waypointTypes) {
-                    val behavior = CardinalHUDClientConfig.behaviors.computeIfAbsent(typeId) { type.defaultBehavior }
+                    val behavior = CardinalHUDClientConfig.behaviors[typeId] ?: type.defaultBehavior
                     val stacks = behavior.findStacksForPlayer(player, type.stackFilter::test)
 
                     for ((index, stack) in stacks.withIndex()) {

@@ -38,7 +38,9 @@ fun generateConfigGui(lastScreen: Screen?): Screen = YetAnotherConfigLib(Cardina
             for ((typeId, type) in CardinalHUDClient.waypointTypes) {
                 options.register(typeId.toString()) {
                     binding = Binding.generic(type.defaultBehavior, { CardinalHUDClientConfig.behaviors[typeId] ?: type.defaultBehavior }) {
-                        CardinalHUDClientConfig.behaviors[typeId] = it
+                        val existing = CardinalHUDClientConfig.behaviors.toMutableMap()
+                        existing[typeId] = it
+                        CardinalHUDClientConfig.behaviors = existing
                     }
 
                     controller(enumSwitch(CompassBehavior::class.java) { Component.translatable("cardinalhud.compass_behavior.${it.serializedName}") })
