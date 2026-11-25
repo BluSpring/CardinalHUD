@@ -30,6 +30,7 @@ import xyz.bluspring.cardinalhud.CardinalHUD
 import xyz.bluspring.cardinalhud.api.CardinalHudApi
 import xyz.bluspring.cardinalhud.api.CompassBehavior
 import xyz.bluspring.sunset.SunsetConfig
+import kotlin.io.path.exists
 import kotlin.math.round
 
 class CardinalHUDClient : ClientModInitializer {
@@ -60,8 +61,10 @@ class CardinalHUDClient : ClientModInitializer {
     }
 
     override fun onInitializeClient() {
-        config.load()
-        config.save()
+        if (!config.path.exists())
+            config.save()
+        else
+            config.load()
 
         CardinalHudApi.registerWaypointType(CardinalHUD.id("compass/spawn"), SPAWN_ICON, CompassBehavior.HELD, 1, { instance -> instance.`is`(Items.COMPASS) && !instance.has(DataComponents.LODESTONE_TRACKER) },
             CompassAngleState.CompassTarget.SPAWN::get)
