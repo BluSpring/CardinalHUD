@@ -11,7 +11,7 @@ import java.util.function.Predicate
 @JvmRecord
 data class CardinalWaypointType(
     val icon: Identifier, val defaultBehavior: CompassBehavior,
-    val maxWaypoints: Int,
+    val maxWaypoints: Int, val supportsNames: Boolean,
     val stackFilter: Predicate<ItemStack>,
     val positionGetter: (ClientLevel, ItemStack, Player) -> GlobalPos?,
     val colorGetter: (ItemStack) -> Int,

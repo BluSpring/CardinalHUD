@@ -54,7 +54,7 @@ class CardinalHUDClient : ClientModInitializer {
         private val SPAWN_ICON = CardinalHUD.id("hud/spawn")
 
         val CATEGORY = KeyMapping.Category(CardinalHUD.id("main"))
-        val TOGGLE_KEY = KeyMappingHelper.registerKeyMapping(KeyMapping("key.cardinalhud.toggle", InputConstants.KEY_Z, CATEGORY))
+        val TOGGLE_KEY = KeyMappingHelper.registerKeyMapping(KeyMapping("key.cardinalhud.toggle", InputConstants.KEY_GRAVE, CATEGORY))
     }
 
     override fun onInitializeClient() {
@@ -68,7 +68,7 @@ class CardinalHUDClient : ClientModInitializer {
             CompassAngleState.CompassTarget.RECOVERY::get)
 
         CardinalHudApi.registerWaypointType(CardinalHUD.id("compass/lodestone"), LODESTONE_ICON, CompassBehavior.INVENTORY, 50, { instance -> instance.`is`(Items.COMPASS) && instance.has(DataComponents.LODESTONE_TRACKER) },
-            CompassAngleState.CompassTarget.LODESTONE::get)
+            CompassAngleState.CompassTarget.LODESTONE::get, supportsNames = true)
 
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             if (TOGGLE_KEY.consumeClick()) {
@@ -143,7 +143,12 @@ class CardinalHUDClient : ClientModInitializer {
 
                         val pos = type.positionGetter(level, stack, player)
                         if (pos != null && pos.dimension == level.dimension()) {
-                            displayIconToHud(graphics, type.colorGetter(stack), type.icon, centerX, Vec3.atCenterOf(pos.pos), client.gameRenderer.mainCamera(), client)
+                            val name = if (type.supportsNames && stack.has(DataComponents.CUSTOM_NAME))
+                                stack.customName ?: Component.empty()
+                            else
+                                Component.empty()
+
+                            displayIconToHud(graphics, type.colorGetter(stack), type.icon, centerX, Vec3.atCenterOf(pos.pos), client.gameRenderer.mainCamera(), client, name)
                         }
                     }
                 }

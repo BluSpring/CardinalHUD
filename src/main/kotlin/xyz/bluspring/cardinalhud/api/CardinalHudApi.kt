@@ -14,10 +14,10 @@ import java.util.function.Predicate
 object CardinalHudApi {
     @JvmOverloads
     @JvmStatic
-    fun registerWaypointType(name: Identifier, icon: Identifier, defaultBehavior: CompassBehavior = CompassBehavior.INVENTORY, maxWaypoints: Int = Int.MAX_VALUE, stackFilter: Predicate<ItemStack>, positionGetter: TriFunction<ClientLevel, ItemStack, Player, GlobalPos?>, colorGetter: Function<ItemStack, Int> = { -1 }) {
+    fun registerWaypointType(name: Identifier, icon: Identifier, defaultBehavior: CompassBehavior = CompassBehavior.INVENTORY, maxWaypoints: Int = Int.MAX_VALUE, stackFilter: Predicate<ItemStack>, positionGetter: TriFunction<ClientLevel, ItemStack, Player, GlobalPos?>, colorGetter: Function<ItemStack, Int> = { -1 }, supportsNames: Boolean = false) {
         if (CardinalHUDClient.waypointTypes.contains(name))
             throw IllegalArgumentException("Waypoint type $name already registered!")
 
-        CardinalHUDClient.waypointTypes[name] = CardinalWaypointType(icon, defaultBehavior, maxWaypoints, stackFilter, positionGetter::apply, colorGetter::apply)
+        CardinalHUDClient.waypointTypes[name] = CardinalWaypointType(icon, defaultBehavior, maxWaypoints, supportsNames, stackFilter, positionGetter::apply, colorGetter::apply)
     }
 }
