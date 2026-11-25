@@ -11,5 +11,8 @@
   "cardinalhud.compass_behavior.disabled": "Disabled",
   "cardinalhud.compass_behavior.held": "Only when held",
   "cardinalhud.compass_behavior.hotbar": "Only when in hotbar",
-  "cardinalhud.compass_behavior.inventory": "Anywhere in inventory"
+  "cardinalhud.compass_behavior.inventory": "Anywhere in inventory",
+
+  "key.category.cardinalhud.main": "CardinalHUD",
+  "key.cardinalhud.toggle": "Toggle HUD"
 }

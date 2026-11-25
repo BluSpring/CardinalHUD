@@ -1,11 +1,15 @@
 package xyz.bluspring.cardinalhud.client
 
+import com.mojang.blaze3d.platform.InputConstants
 import com.mojang.serialization.Codec
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Camera
+import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
@@ -48,6 +52,9 @@ class CardinalHUDClient : ClientModInitializer {
         private val LODESTONE_ICON = CardinalHUD.id("hud/lodestone")
         private val RESPAWN_ICON = CardinalHUD.id("hud/respawn")
         private val SPAWN_ICON = CardinalHUD.id("hud/spawn")
+
+        val CATEGORY = KeyMapping.Category(CardinalHUD.id("main"))
+        val TOGGLE_KEY = KeyMappingHelper.registerKeyMapping(KeyMapping("key.cardinalhud.toggle", InputConstants.KEY_Z, CATEGORY))
     }
 
     override fun onInitializeClient() {
@@ -62,6 +69,13 @@ class CardinalHUDClient : ClientModInitializer {
 
         CardinalHudApi.registerWaypointType(CardinalHUD.id("compass/lodestone"), LODESTONE_ICON, CompassBehavior.INVENTORY, 50, { instance -> instance.`is`(Items.COMPASS) && instance.has(DataComponents.LODESTONE_TRACKER) },
             CompassAngleState.CompassTarget.LODESTONE::get)
+
+        ClientTickEvents.END_CLIENT_TICK.register { client ->
+            if (TOGGLE_KEY.consumeClick()) {
+                CardinalHUDClientConfig.isHidden = !CardinalHUDClientConfig.isHidden
+                config.save()
+            }
+        }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.BOSS_BAR, CardinalHUD.id("cardinal_hud")) { graphics, deltaTracker ->
             val client = Minecraft.getInstance()
