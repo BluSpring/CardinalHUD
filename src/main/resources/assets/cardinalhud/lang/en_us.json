@@ -1,0 +1,15 @@
+{
+  "yacl3.config.cardinalhud.category.main": "CardinalHUD",
+  "yacl3.config.cardinalhud.category.main.group.preferences": "Preferences",
+  "yacl3.config.cardinalhud.category.main.group.preferences.option.replaceLocatorBar": "Replace Locator Bar",
+  "yacl3.config.cardinalhud.category.main.group.preferences.option.isHidden": "Is HUD Hidden?",
+  "yacl3.config.cardinalhud.category.main.group.behaviors": "Waypoint Icon Display Behaviors",
+  "yacl3.config.cardinalhud.category.main.group.behaviors.option.cardinalhud:compass/spawn": "Spawn Compass",
+  "yacl3.config.cardinalhud.category.main.group.behaviors.option.cardinalhud:compass/recovery": "Recovery Compass",
+  "yacl3.config.cardinalhud.category.main.group.behaviors.option.cardinalhud:compass/lodestone": "Lodestone Compass",
+
+  "cardinalhud.compass_behavior.disabled": "Disabled",
+  "cardinalhud.compass_behavior.held": "Only when held",
+  "cardinalhud.compass_behavior.hotbar": "Only when in hotbar",
+  "cardinalhud.compass_behavior.inventory": "Anywhere in inventory"
+}

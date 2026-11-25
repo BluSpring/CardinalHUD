@@ -3,6 +3,7 @@ package xyz.bluspring.cardinalhud.client.config
 import dev.isxander.yacl3.api.Binding
 import dev.isxander.yacl3.dsl.*
 import net.minecraft.client.gui.screens.Screen
+import net.minecraft.network.chat.Component
 import xyz.bluspring.cardinalhud.CardinalHUD
 import xyz.bluspring.cardinalhud.api.CompassBehavior
 import xyz.bluspring.cardinalhud.client.CardinalHUDClient
@@ -40,7 +41,7 @@ fun generateConfigGui(lastScreen: Screen?): Screen = YetAnotherConfigLib(Cardina
                         CardinalHUDClientConfig.behaviors[typeId] = it
                     }
 
-                    controller(enumSwitch(CompassBehavior::class.java))
+                    controller(enumSwitch(CompassBehavior::class.java) { Component.translatable("cardinalhud.compass_behavior.${it.serializedName}") })
                 }
             }
         }
