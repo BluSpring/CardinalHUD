@@ -83,6 +83,9 @@ class CardinalHUDClient : ClientModInitializer {
         }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.BOSS_BAR, CardinalHUD.id("cardinal_hud")) { graphics, deltaTracker ->
+            if (CardinalHUDClientConfig.isHidden)
+                return@attachElementBefore
+
             val client = Minecraft.getInstance()
             val yaw = client.gameRenderer.mainCamera().yaw()
             graphics.pose().pushMatrix()
